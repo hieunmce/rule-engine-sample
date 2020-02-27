@@ -30,7 +30,7 @@ func Handle() {
 	workingMemory := gruleAST.NewWorkingMemory()
 	knowledgeBase := gruleAST.NewKnowledgeBase("tutorial", "1.0.0")
 	ruleBuilder := gruleBuilder.NewRuleBuilder(knowledgeBase, workingMemory)
-	bundle := grulePkg.NewFileResourceBundle("https://github.com/hieunmce/rule-engine-sample.git", "/**/*.grl")
+	bundle := grulePkg.NewGITResourceBundle("https://github.com/hieunmce/rule-engine-sample.git", "/**/*.grl")
 	resources := bundle.MustLoad()
 	for _, res := range resources {
 		err := ruleBuilder.BuildRuleFromResource(res)
