@@ -17,7 +17,7 @@ func Handle() {
 	}
 
 	dataCtx := gruleAST.NewDataContext()
-	err := dataCtx.Add("MF", myFact)
+	err := dataCtx.Add("Patient", myFact)
 	if err != nil {
 		panic(err)
 	}

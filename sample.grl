@@ -3,4 +3,5 @@ rule Group12MonthTo5YearsAge "Age" salience 10 {
         Patient.Age >= 1 || Patient.Age <= 5
     then
         Patient.Group12MonthTo5YearsAge = true;
+        Retract("Group12MonthTo5YearsAge")
 }
