@@ -2,7 +2,6 @@ package handler
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/hieunmce/rule-engine-sample/core"
 
@@ -13,12 +12,8 @@ import (
 )
 
 func Handle() {
-	myFact := &core.MyFact{
-		IntAttribute:     123,
-		StringAttribute:  "Some string value",
-		BooleanAttribute: true,
-		FloatAttribute:   1.234,
-		TimeAttribute:    time.Now(),
+	myFact := &core.Patient{
+		Age: 2,
 	}
 
 	dataCtx := gruleAST.NewDataContext()
@@ -44,5 +39,5 @@ func Handle() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("RESULT", myFact.WhatToSay)
+	fmt.Println("RESULT", myFact.Group12MonthTo5YearsAge)
 }

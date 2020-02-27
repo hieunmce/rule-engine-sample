@@ -1,19 +1,27 @@
 package core
 
-import (
-	"fmt"
-	"time"
-)
+type Patient struct {
+	// input
+	Age               int64
+	Communication     string
+	DailyLivingSkills string
+	Socialization     string
 
-type MyFact struct {
-	IntAttribute     int64
-	StringAttribute  string
-	BooleanAttribute bool
-	FloatAttribute   float64
-	TimeAttribute    time.Time
-	WhatToSay        string
-}
+	// logic handle
+	Group12MonthTo5YearsAge bool
 
-func (mf *MyFact) GetWhatToSay(sentence string) string {
-	return fmt.Sprintf("Let say \"%s\"", sentence)
+	CommunicationLow  bool
+	CommunicationHigh bool
+
+	DailyLivingSkillLow  bool
+	DailyLivingSkillHigh bool
+
+	SocializationLow  bool
+	SocializationHigh bool
+
+	// output
+	HaveRecommendation        bool
+	DangerousBehaviors        bool
+	TraditionalABARecommended bool
+	TypeOfProgram             string
 }
