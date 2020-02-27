@@ -12,12 +12,16 @@ import (
 )
 
 func Handle() {
-	myFact := &core.Patient{
-		Age: 2,
+	patient := &core.Patient{
+		Age:                2,
+		Communication:      "Low",
+		Socialization:      "High",
+		DailyLivingSkill:   "High",
+		DangerousBehaviors: "N",
 	}
 
 	dataCtx := gruleAST.NewDataContext()
-	err := dataCtx.Add("Patient", myFact)
+	err := dataCtx.Add("Patient", patient)
 	if err != nil {
 		panic(err)
 	}
@@ -25,6 +29,7 @@ func Handle() {
 	workingMemory := gruleAST.NewWorkingMemory()
 	knowledgeBase := gruleAST.NewKnowledgeBase("tutorial", "1.0.0")
 	ruleBuilder := gruleBuilder.NewRuleBuilder(knowledgeBase, workingMemory)
+
 	bundle := grulePkg.NewGITResourceBundle("https://github.com/hieunmce/rule-engine-sample.git", "/**/*.grl")
 	resources := bundle.MustLoad()
 	for _, res := range resources {
@@ -39,5 +44,12 @@ func Handle() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("RESULT", myFact.Group12MonthTo5YearsAge)
+
+	if patient.HaveRecommendation {
+		// TODO
+		fmt.Println("START TO INSERT RECOMMENDATION")
+		fmt.Printf("%+v\n", patient)
+	} else {
+		fmt.Println("CAN'T MAKE RECOMMENDATION")
+	}
 }

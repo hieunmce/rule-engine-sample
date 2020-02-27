@@ -1,7 +1,133 @@
-rule Group12MonthTo5YearsAge "Age" salience 10 {
+rule CheckGroup12MonthTo5YearsAge "set age between 12month and 5 years" salience 10 { // highest prioprity always execute first
     when
-        Patient.Age >= 1 || Patient.Age <= 5
+        Patient.Age >= 1 && Patient.Age <= 5
     then
         Patient.Group12MonthTo5YearsAge = true;
-        Retract("Group12MonthTo5YearsAge");
+        Retract("CheckGroup12MonthTo5YearsAge");
+}
+
+rule CommunicationLow "set communication Low" { // default prioprity
+    when
+        Patient.Communication == "Low" || Patient.Communication == "Moderately Low"
+    then
+        Patient.CommunicationLow = true;
+        Retract("CommunicationLow");
+}
+
+rule CommunicationHigh "set communication High" {
+    when
+        Patient.Communication == "Adequate" ||
+        Patient.Communication == "Moderately High" ||
+        Patient.Communication == "High"
+    then
+        Patient.CommunicationHigh = true;
+        Retract("CommunicationHigh");
+}
+
+rule DailyLivingSkillLow "set dailyLivingSkill Low" { 
+    when
+        Patient.DailyLivingSkill == "Low" || Patient.DailyLivingSkill == "Moderately Low"
+    then
+        Patient.DailyLivingSkillLow = true;
+        Retract("DailyLivingSkillLow");
+}
+
+rule DailyLivingSkillHigh "set dailyLivingSkill High" {
+    when
+        Patient.DailyLivingSkill == "Adequate" ||
+        Patient.DailyLivingSkill == "Moderately High" ||
+        Patient.DailyLivingSkill == "High"
+    then
+        Patient.DailyLivingSkillHigh = true;
+        Retract("DailyLivingSkillHigh");
+}
+
+rule SocializationLow "set socialization Low" { 
+    when
+        Patient.Socialization == "Low" || Patient.Socialization == "Moderately Low"
+    then
+        Patient.SocializationLow = true;
+        Retract("SocializationLow");
+}
+
+rule SocializationHigh "set socialization High" {
+    when
+        Patient.Socialization == "Adequate" ||
+        Patient.Socialization == "Moderately High" ||
+        Patient.Socialization == "High"
+    then
+        Patient.SocializationHigh = true;
+        Retract("SocializationHigh");
+}
+
+rule Recommend1 "recommend 1" {
+     when
+        Patient.CommunicationLow &&
+        Patient.DailyLivingSkillLow &&
+        Patient.SocializationLow &&
+        Patient.Group12MonthTo5YearsAge
+     then
+        Patient.DoRecommend1();
+        Retract("Recommend1");
+}
+
+rule Recommend2 "recommend 2" {
+     when
+        Patient.CommunicationLow &&
+        Patient.DailyLivingSkillHigh &&
+        Patient.SocializationLow &&
+        Patient.Group12MonthTo5YearsAge
+     then
+        Patient.DoRecommend1();
+        Retract("Recommend2");
+}
+
+rule Recommend3 "recommend 3" {
+     when
+        Patient.CommunicationLow &&
+        Patient.DailyLivingSkillLow &&
+        Patient.SocializationHigh &&
+        Patient.Group12MonthTo5YearsAge
+     then
+        Patient.DoRecommend1();
+        Retract("Recommend3");
+}
+
+rule Recommend4 "recommend 4" {
+     when
+        Patient.CommunicationHigh &&
+        Patient.Group12MonthTo5YearsAge
+     then
+        Patient.HaveRecommendation = true;
+        Patient.TraditionalABARecommended = "-";
+        Patient.TypeOfProgram = "";
+        Retract("Recommend4");
+}
+
+rule Recommend5 "recommend 5" {
+     when
+        Patient.CommunicationLow &&
+        Patient.DailyLivingSkillHigh &&
+        Patient.SocializationHigh &&
+        Patient.Group12MonthTo5YearsAge &&
+        Patient.DangerousBehaviors == "Y"
+     then
+        Patient.HaveRecommendation = true;
+        Patient.TraditionalABARecommended = "Y";
+        Patient.TypeOfProgram = "Comprehensive program - heavier goal weight on communication skills and behavior reduction";
+        Retract("Recommend5");
+}
+
+rule Recommend6 "recommend 6" {
+     when
+        Patient.CommunicationLow &&
+        Patient.DailyLivingSkillHigh &&
+        Patient.SocializationHigh &&
+        Patient.Group12MonthTo5YearsAge &&
+        Patient.DangerousBehaviors == "N"
+     then
+        Patient.HaveRecommendation = true;
+        Patient.TraditionalABARecommended = "Y";
+        Patient.TypeOfProgram = "Focused program on communication skills";
+        Retract("Recommend6");
 }
