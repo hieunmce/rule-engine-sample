@@ -2,7 +2,7 @@ package core
 
 type Patient struct {
 	// input
-	Age                int64  `json:"age"`
+	Age                int    `json:"age"`
 	Communication      string `json:"communication"`
 	DailyLivingSkill   string `json:"daily_living_skill"`
 	Socialization      string `json:"socialization"`

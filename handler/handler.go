@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/hieunmce/rule-engine-sample/core"
@@ -11,19 +12,11 @@ import (
 	grulePkg "github.com/hyperjumptech/grule-rule-engine/pkg"
 )
 
-func Handle() {
-	patient := &core.Patient{
-		Age:                2,
-		Communication:      "Low",
-		Socialization:      "High",
-		DailyLivingSkill:   "High",
-		DangerousBehaviors: "N",
-	}
-
+func HandleEnqueue(patient *core.Patient) error {
 	dataCtx := gruleAST.NewDataContext()
 	err := dataCtx.Add("Patient", patient)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	workingMemory := gruleAST.NewWorkingMemory()
@@ -35,21 +28,20 @@ func Handle() {
 	for _, res := range resources {
 		err := ruleBuilder.BuildRuleFromResource(res)
 		if err != nil {
-			panic(err)
+			return err
 		}
 	}
 
 	engine := gruleEngine.NewGruleEngine()
 	err = engine.Execute(dataCtx, knowledgeBase, workingMemory)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	if patient.HaveRecommendation {
-		// TODO
 		fmt.Println("START TO INSERT RECOMMENDATION")
 		fmt.Printf("%+v\n", patient)
-	} else {
-		fmt.Println("CAN'T MAKE RECOMMENDATION")
+		return nil
 	}
+	return errors.New("CAN'T MAKE RECOMMENDATION")
 }
