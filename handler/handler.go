@@ -1,1 +1,48 @@
 package handler
+
+import (
+	"fmt"
+	"time"
+
+	"github.com/hieunmce/rule-engine-sample/core"
+
+	gruleAST "github.com/hyperjumptech/grule-rule-engine/ast"
+	gruleBuilder "github.com/hyperjumptech/grule-rule-engine/builder"
+	gruleEngine "github.com/hyperjumptech/grule-rule-engine/engine"
+	grulePkg "github.com/hyperjumptech/grule-rule-engine/pkg"
+)
+
+func Handle() {
+	myFact := &core.MyFact{
+		IntAttribute:     123,
+		StringAttribute:  "Some string value",
+		BooleanAttribute: true,
+		FloatAttribute:   1.234,
+		TimeAttribute:    time.Now(),
+	}
+
+	dataCtx := gruleAST.NewDataContext()
+	err := dataCtx.Add("MF", myFact)
+	if err != nil {
+		panic(err)
+	}
+
+	workingMemory := gruleAST.NewWorkingMemory()
+	knowledgeBase := gruleAST.NewKnowledgeBase("tutorial", "1.0.0")
+	ruleBuilder := gruleBuilder.NewRuleBuilder(knowledgeBase, workingMemory)
+	bundle := grulePkg.NewFileResourceBundle("https://github.com/hieunmce/rule-engine-sample.git", "/**/*.grl")
+	resources := bundle.MustLoad()
+	for _, res := range resources {
+		err := ruleBuilder.BuildRuleFromResource(res)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	engine := gruleEngine.NewGruleEngine()
+	err = engine.Execute(dataCtx, knowledgeBase, workingMemory)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("RESULT", myFact.WhatToSay)
+}
